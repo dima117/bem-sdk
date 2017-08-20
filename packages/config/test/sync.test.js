@@ -44,7 +44,7 @@ describe('sync', () => {
         expect(bemConfig().configs(true)).to.deep.equal([{ test: 1 }, { test: 2 }]);
     });
 
-// root()
+    // root()
     it('should return project root', () => {
         const bemConfig = config([
             { test: 1, __source: 'some/path' },
@@ -65,7 +65,7 @@ describe('sync', () => {
         expect(bemConfig().rootSync()).to.deep.equal(path.dirname(__filename));
     });
 
-// get()
+    // get()
     it('should return merged config', () => {
         const bemConfig = config([
             { test: 1 },
@@ -76,7 +76,7 @@ describe('sync', () => {
         expect(bemConfig().getSync()).to.deep.equal({ test: 2, other: 'field' });
     });
 
-// level()
+    // level()
     it('should return undefined if no levels in config', () => {
         const bemConfig = config();
 
@@ -282,7 +282,7 @@ describe('sync', () => {
         expect(actual).to.deep.equal(expected);
     });
 
-// library()
+    // library()
     it('should return undefined if no libs in config', () => {
         const bemConfig = config();
 
@@ -320,7 +320,7 @@ describe('sync', () => {
         expect(libConf).to.deep.equal(conf[0]);
     });
 
-// module()
+    // module()
     it('should return undefined if no modules in config', () => {
         const bemConfig = config();
 
@@ -418,6 +418,35 @@ describe('sync', () => {
             extended: 'yo',
             argv: true
         };
+
+        expect(actual).to.deep.equal(expected);
+    });
+
+    // levels
+    it.only('should return levels set', () => {
+        const bemConfig = config([{
+            levels: [
+                { path: 'common.blocks', data: '1' },
+                { path: 'desktop.blocks', data: '2' },
+                { path: 'touch.blocks', data: '3' },
+                { path: 'touch-phone.blocks', data: '4' },
+                { path: 'touch-pad.blocks', data: '5' }
+            ],
+            sets: {
+                desktop: 'common desktop',
+                'touch-phone': 'common touch touch-phone',
+                'touch-pad': 'common touch touch-pad'
+            },
+            __source: path.join(process.cwd(), path.basename(__filename))
+        }]);
+
+        const expected = [
+            { path: 'common.blocks', data: '1' },
+            { path: 'touch.blocks', data: '3' },
+            { path: 'touch-phone.blocks', data: '4' }
+        ];
+
+        const actual = bemConfig().levelsSync('touch-phone');
 
         expect(actual).to.deep.equal(expected);
     });

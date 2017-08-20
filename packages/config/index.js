@@ -259,6 +259,18 @@ BemConfig.prototype.levelMapSync = function() {
     }, {});
 };
 
+BemConfig.prototype.levelsSync = function(layer) {
+    var config = this.getSync(),
+        sets = config.sets || {},
+        layerSet = sets[layer];
+
+    if (!layerSet) { return []; }
+
+    var layers = layerSet.split(' ');
+
+    return layers;
+};
+
 /**
  * Returns config for given module name synchronously
  * @param {String} moduleName - name of module
