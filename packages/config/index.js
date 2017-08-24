@@ -278,18 +278,15 @@ BemConfig.prototype.levelsSync = function(setName) {
     // TODO: uniq
     return set.reduce((acc, setDescription) => {
         if (setDescription.library) {
-            // acc.push(levelsSyncДляБиблиотеки())
-            return acc;
+            var libConfig = _this.librarySync(setDescription.library);
+            if (!libConfig) { return acc; }
+
+            return acc.concat(libConfig.levelsSync(setDescription.set));
         }
 
         if (setDescription.set) {
-            return acc;
             return acc.concat(_this.levelsSync(setDescription.set));
         }
-
-        // console.log('levelsMap', levelsMap);
-
-        console.log('setDescription.layer', setDescription.layer);
 
         var level = levels.find(lvl => {
             return lvl.layer === setDescription.layer;
@@ -297,19 +294,7 @@ BemConfig.prototype.levelsSync = function(setName) {
 
         var levelPath = level.path || level.layer + '.blocks';
 
-        console.log('level.path', levelPath);
-        console.log('levelsMap', levelsMap);
-
-        if (levelsMap[levelPath]) {
-            acc.push(levelsMap[levelPath]);
-        } else {
-            console.log('не судьба');
-            console.log('level.path', level.path);
-            console.log('level.layer', level.layer);
-            console.log('levelPath', levelPath);
-        }
-
-
+        acc.push(levelsMap[levelPath]);
 
         return acc;
     }, []);

@@ -423,7 +423,7 @@ describe('sync', () => {
     });
 
     // levels
-    it.only('should return levels set', () => {
+    it('should return levels set', () => {
         const bemConfig = config([{
             levels: [
                 { layer: 'common', data: '1' },
@@ -431,27 +431,42 @@ describe('sync', () => {
                 { layer: 'touch', path: 'olololo', data: '3' },
                 { layer: 'touch-phone', data: '4' },
                 { layer: 'touch-pad', data: '5' }
-                // { path: 'common.blocks', data: '1' },
-                // { path: 'desktop.blocks', data: '2' },
-                // { path: 'touch.blocks', data: '3' },
-                // { path: 'touch-phone.blocks', data: '4' },
-                // { path: 'touch-pad.blocks', data: '5' }
             ],
             sets: {
                 desktop: 'common desktop',
-                'touch-phone': '@bem-components common touch touch-phone',
+                'touch-phone': '@bem-components common desktop@ touch touch-phone',
                 'touch-pad': 'common touch touch-pad'
+            },
+            libs: {
+                'bem-components': {
+                    path: 'node_modules/bem-components'
+                }
             },
             __source: path.join(process.cwd(), path.basename(__filename))
         }]);
 
-        // const expected = [
-        //     { path: 'common.blocks', data: '1' },
-        //     { path: 'touch.blocks', data: '3' },
-        //     { path: 'touch-phone.blocks', data: '4' }
-        // ];
-
-        const expected = [];
+        const expected = [
+            {
+                data: '1',
+                layer: 'common',
+                path: path.resolve('common.blocks')
+            },
+            {
+                data: '2',
+                layer: 'desktop',
+                path: 'desktop.blocks'
+            },
+            {
+                data: '3',
+                layer: 'touch',
+                path: path.resolve('olololo')
+            },
+            {
+                data: '4',
+                layer: 'touch-phone',
+                path: 'touch-phone.blocks' // ???
+            }
+        ];
 
         const actual = bemConfig().levelsSync('touch-phone');
 
