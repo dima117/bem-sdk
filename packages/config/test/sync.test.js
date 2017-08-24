@@ -426,25 +426,32 @@ describe('sync', () => {
     it.only('should return levels set', () => {
         const bemConfig = config([{
             levels: [
-                { path: 'common.blocks', data: '1' },
-                { path: 'desktop.blocks', data: '2' },
-                { path: 'touch.blocks', data: '3' },
-                { path: 'touch-phone.blocks', data: '4' },
-                { path: 'touch-pad.blocks', data: '5' }
+                { layer: 'common', data: '1' },
+                { layer: 'desktop', data: '2' },
+                { layer: 'touch', path: 'olololo', data: '3' },
+                { layer: 'touch-phone', data: '4' },
+                { layer: 'touch-pad', data: '5' }
+                // { path: 'common.blocks', data: '1' },
+                // { path: 'desktop.blocks', data: '2' },
+                // { path: 'touch.blocks', data: '3' },
+                // { path: 'touch-phone.blocks', data: '4' },
+                // { path: 'touch-pad.blocks', data: '5' }
             ],
             sets: {
                 desktop: 'common desktop',
-                'touch-phone': 'common touch touch-phone',
+                'touch-phone': '@bem-components common touch touch-phone',
                 'touch-pad': 'common touch touch-pad'
             },
             __source: path.join(process.cwd(), path.basename(__filename))
         }]);
 
-        const expected = [
-            { path: 'common.blocks', data: '1' },
-            { path: 'touch.blocks', data: '3' },
-            { path: 'touch-phone.blocks', data: '4' }
-        ];
+        // const expected = [
+        //     { path: 'common.blocks', data: '1' },
+        //     { path: 'touch.blocks', data: '3' },
+        //     { path: 'touch-phone.blocks', data: '4' }
+        // ];
+
+        const expected = [];
 
         const actual = bemConfig().levelsSync('touch-phone');
 

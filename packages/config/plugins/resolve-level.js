@@ -16,6 +16,7 @@ module.exports = function(config, configs, options, cb) {
     if (!levels.length) { return cb ? cb(res) : res; }
 
     levels.forEach(function(level, i) {
+        level.path || (level.path = level.layer + '.blocks');
         levelsIndex[level.path] = i;
 
         if (!isGlob(level.path)) {

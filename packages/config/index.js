@@ -3,7 +3,8 @@
 var path = require('path'),
     rc = require('betterc'),
     Promise = require('pinkie-promise'),
-    merge = require('./lib/merge');
+    merge = require('./lib/merge'),
+    resolveSets = require('./lib/resolve-sets');
 
 /**
  * Constructor
@@ -254,21 +255,64 @@ BemConfig.prototype.levelMapSync = function() {
 
     var allLevels = [].concat(libLevels, projectLevels); // hm.
     return allLevels.reduce(function(acc, level) {
+        if (!level.path) {
+            level.path = level.layer + '.blocks';
+        }
         acc[level.path] = level;
         return acc;
     }, {});
 };
 
-BemConfig.prototype.levelsSync = function(layer) {
-    var config = this.getSync(),
-        sets = config.sets || {},
-        layerSet = sets[layer];
+BemConfig.prototype.levelsSync = function(setName) {
+    var _this = this,
+        config = this.getSync(),
+        levels = config.levels || [],
+        levelsMap = this.levelMapSync(),
+        sets = config.sets || {};
 
-    if (!layerSet) { return []; }
+    if (!sets[setName]) { return []; }
 
-    var layers = layerSet.split(' ');
+    var resolvedSets = resolveSets(sets),
+        set = resolvedSets[setName];
 
-    return layers;
+    // TODO: uniq
+    return set.reduce((acc, setDescription) => {
+        if (setDescription.library) {
+            // acc.push(levelsSyncДляБиблиотеки())
+            return acc;
+        }
+
+        if (setDescription.set) {
+            return acc;
+            return acc.concat(_this.levelsSync(setDescription.set));
+        }
+
+        // console.log('levelsMap', levelsMap);
+
+        console.log('setDescription.layer', setDescription.layer);
+
+        var level = levels.find(lvl => {
+            return lvl.layer === setDescription.layer;
+        }) || {};
+
+        var levelPath = level.path || level.layer + '.blocks';
+
+        console.log('level.path', levelPath);
+        console.log('levelsMap', levelsMap);
+
+        if (levelsMap[levelPath]) {
+            acc.push(levelsMap[levelPath]);
+        } else {
+            console.log('не судьба');
+            console.log('level.path', level.path);
+            console.log('level.layer', level.layer);
+            console.log('levelPath', levelPath);
+        }
+
+
+
+        return acc;
+    }, []);
 };
 
 /**
