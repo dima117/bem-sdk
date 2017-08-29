@@ -10,6 +10,8 @@ environment:
 
 install:
   - ps: Install-Product node $env:nodejs_version
+  - npm -g install npm@3
+  - set PATH=%APPDATA%\npm;%PATH%
   - node --version
   - npm --version
   - npm install lerna
