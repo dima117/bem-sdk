@@ -428,7 +428,7 @@ describe('sync', () => {
             levels: [
                 { layer: 'common', data: '1' },
                 { layer: 'desktop', data: '2' },
-                { layer: 'touch', path: 'olololo', data: '3' },
+                { layer: 'touch', path: 'custom-path', data: '3' },
                 { layer: 'touch-phone', data: '4' },
                 { layer: 'touch-pad', data: '5' }
             ],
@@ -454,12 +454,13 @@ describe('sync', () => {
             {
                 data: '2',
                 layer: 'desktop',
-                path: 'desktop.blocks'
+                // path: path.resolve('desktop.blocks')
+                path: 'desktop.blocks' // ???
             },
             {
                 data: '3',
                 layer: 'touch',
-                path: path.resolve('olololo')
+                path: path.resolve('custom-path')
             },
             {
                 data: '4',

@@ -49,7 +49,7 @@ BemConfig.prototype.configs = function(isSync) {
 
     if (isSync) {
 
-        var configs = this._configs || (this._configs = rc.sync(rcOpts));
+        var configs = extendConfigsPathByLayer(this._configs || (this._configs = rc.sync(rcOpts)));
 
         this._root = getConfigsRootDir(configs);
 
@@ -63,7 +63,7 @@ BemConfig.prototype.configs = function(isSync) {
     var _this = this;
 
     return (this._configs ? Promise.resolve(this._configs) : rc(rcOpts)).then(function(cfgs) {
-        _this._configs || (_this._configs = cfgs);
+        extendConfigsPathByLayer(_this._configs || (_this._configs = cfgs));
 
         _this._root = getConfigsRootDir(cfgs);
 
@@ -255,9 +255,6 @@ BemConfig.prototype.levelMapSync = function() {
 
     var allLevels = [].concat(libLevels, projectLevels); // hm.
     return allLevels.reduce(function(acc, level) {
-        if (!level.path) {
-            level.path = level.layer + '.blocks';
-        }
         acc[level.path] = level;
         return acc;
     }, {});
@@ -347,6 +344,16 @@ function getLevelByConfigs(pathToLevel, options, allConfigs, root) {
     delete levelOpts.root;
 
     return Object.keys(levelOpts).length ? levelOpts : undefined;
+}
+
+function extendConfigsPathByLayer(configs) {
+    configs.forEach(config => {
+        config.levels && config.levels.forEach(level => {
+            level.path || (level.path = level.layer + '.blocks');
+        });
+    });
+
+    return configs;
 }
 
 module.exports = function(opts) {
